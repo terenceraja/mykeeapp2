@@ -1,0 +1,52 @@
+/*SIDE BAR*/
+.nav_mobile {
+  background-color: var(--primary);
+  display: flex;
+  width: 100%;
+  height: 50px;
+  position: fixed;
+  bottom: 0; /* Stick to the bottom of the viewport */
+  z-index: 100;
+}
+/**/
+
+/*LIST CONTAINER*/
+.nav_rows_container_mobile {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 15px;
+}
+/**/
+
+/*LINK TAG*/
+.link_mobile {
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* ICON */
+.icons_mobile {
+  filter: brightness(0) invert(1);
+  width: 24px;
+  padding: 3px;
+}
+
+a:hover .icons_mobile {
+  filter: brightness(0) invert(0);
+  transition: filter 0.5s ease, box-shadow 0.5s ease;
+}
+
+#logoutBtn {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
