@@ -13,6 +13,7 @@
     margin: 0;
     padding: 0;
     height: 100%;
+    max-width: 100vh;
   }
 
   body {
@@ -30,10 +31,17 @@
     background-color: var(--background);
   }
 
+  .log_outlet {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .outlet {
     margin-top: 50px;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: calc(100%-50px);
     gap: 10px;
     background-color: var(--background);
