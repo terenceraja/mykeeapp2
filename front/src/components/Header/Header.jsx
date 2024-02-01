@@ -5,10 +5,10 @@ import logo from "../../assets/kslogo.png";
 
 const Header = () => {
   return (
-    <div className="header_mobile">
+    <header className="header_mobile">
       <img src={logo} className="logo" alt="navLogo" />
       <img src={mvt} className="icons_mobile" alt="navLogo" />
-    </div>
+    </header>
   );
 };
 

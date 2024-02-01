@@ -4,6 +4,7 @@
   --secondary: black; /* Define an accent color */
   --highlight: yellow;
   --complementary: #ef8026;
+  --footer: red;
 }
 
 /* Styles for screens between 480px and 768px */
@@ -30,13 +31,19 @@
   }
 
   .outlet {
-    height: calc(100% - 100px);
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100%-50px);
+    gap: 10px;
     background-color: var(--background);
+    box-sizing: border-box;
+    padding: 5px 5px 55px 5px;
   }
 
   /*LABEL TITLE*/
   h1 {
-    font-size: 12px;
+    font-size: 14px;
     color: white;
     margin: 0px;
   }
@@ -51,6 +58,12 @@
   /* LOGIN SUBTITLE */
   h3 {
     font-size: 20px;
+    color: var(--complementary);
+    margin: 0px;
+  }
+
+  h4 {
+    font-size: 15px;
     color: var(--complementary);
     margin: 0px;
   }

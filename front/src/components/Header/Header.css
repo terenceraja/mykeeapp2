@@ -7,6 +7,9 @@
   padding: 0px 20px;
   background-color: var(--complementary);
   box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .logo {
