@@ -4,3 +4,11 @@
   width: 100%;
   gap: 10px;
 }
+
+.ptf_content {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  box-sizing: border-box;
+  gap: 10px;
+}

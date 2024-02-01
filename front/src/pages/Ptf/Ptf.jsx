@@ -56,7 +56,7 @@ const Ptf = () => {
 
   return (
     <div className="outlet">
-      <section>
+      <section className="ptf_content">
         <Card title="VOS PORTEFEUILLES">
           <div
             className="ag-theme-quartz"
