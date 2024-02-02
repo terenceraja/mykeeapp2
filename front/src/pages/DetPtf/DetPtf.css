@@ -1,0 +1,7 @@
+.ptf_content {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  box-sizing: border-box;
+  gap: 10px;
+}

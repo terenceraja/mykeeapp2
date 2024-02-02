@@ -11,4 +11,5 @@
   justify-items: end;
   background-color: var(--footer);
   box-sizing: border-box;
+  margin-top: 40px;
 }

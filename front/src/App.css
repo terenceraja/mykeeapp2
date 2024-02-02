@@ -1,10 +1,10 @@
 :root {
   --background: #f2f4f3; /* Define your primary color */
-  --primary: blue; /* Define your secondary color */
-  --secondary: black; /* Define an accent color */
+  --primary: #1a3a48; /* NAVBAR PETROL MEDIUM*/
+  --secondary: #06171f; /* TITRE LABEL */
   --highlight: yellow;
   --complementary: #ef8026;
-  --footer: red;
+  --footer: #445d68; /* FOOTER */
 }
 
 /* Styles for screens between 480px and 768px */
@@ -24,6 +24,7 @@
   }
 
   #root {
+    height: 100%;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -39,12 +40,12 @@
   .outlet {
     margin-top: 50px;
     display: flex;
+    height: 100%;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100% - 50px);
     background-color: var(--background);
-    box-sizing: border-box;
     padding: 5px 5px 55px 5px;
+    box-sizing: border-box;
   }
 
   /*LABEL TITLE*/
@@ -109,10 +110,12 @@
   }
 
   .ag-cell {
+    font-size: 12px;
     font-family: "Nunito Sans", sans-serif;
   }
 
   .ag-header-cell {
+    font-size: 12px;
     font-family: "Nunito Sans", sans-serif;
   }
 
@@ -202,4 +205,20 @@
     .tabulator-col.tabulator-sortable.tabulator-col-sorter-element:hover {
     background-color: transparent;
   }
+}
+
+/* AG GRID */
+.ag-theme-quartz {
+  --ag-border-radius: 4px !important;
+  --ag-wrapper-border-radius: 4px !important;
+}
+
+.ag-theme-quartz .ag-paging-page-size,
+.ag-paging-row-summary-panel {
+  display: none;
+}
+
+.ag-theme-quartz .ag-paging-panel {
+  height: 40px;
+  font-size: 12px; /* Adjust the font size for pagination controls */
 }

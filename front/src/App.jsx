@@ -1,5 +1,7 @@
 //CSS
 import "./App.css";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
 // ROUTE DEFINITION
 import { createBrowserRouter, RouterProvider } from "react-router-dom";

@@ -1,58 +1,169 @@
-import React, { useState, useEffect } from "react";
 import Card from "../../components/Card/Card";
 import Footer from "../../components/Footer/Footer";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-quartz.css";
-import { AgGridReact } from "ag-grid-react";
 import "./Ptf.css";
 
+// REACT
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+// AG GRID
+import { AgGridReact } from "ag-grid-react";
+
+// UTILS FUNCTIONS
+import {
+  formatISO,
+  getUniqueLanguesWithSum,
+  getUniqueDevWithSum,
+  formatSpacingAndDecimalNumbers,
+} from "../../utils/functions";
+
+//REDUCERS
+import {
+  addIdCtraPtfToStore,
+  addActivePtfToStore,
+  addTotalMVToStore,
+} from "../../reducers/primaryKeys";
+
+// HTTP REQUEST
+import { fetchPtf, fetchOpe, fetchLign } from "../../utils/http";
+
 const Ptf = () => {
-  const [rowData, setRowData] = useState([
-    { make: "Tesla", model: "Model Y", price: 64950, electric: true },
-    { make: "Ford", model: "F-Series", price: 33850, electric: false },
-    { make: "Toyota", model: "Corolla", price: 29600, electric: false },
-  ]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [dataPtf, setdataPtf] = useState([]);
+  const [dataOpe, setdataOpe] = useState([]);
+  const [dataClasses, setDataClasses] = useState({});
+  const [dataDevises, setDataDevises] = useState({});
+  const [error, setError] = useState("");
+  const IdCtraCli = useSelector((state) => state.keys.value.IdCtraCli);
+  console.log(dataPtf);
 
-  const [colDefs, setColDefs] = useState([
-    { field: "make", flex: 1 },
-    { field: "model", flex: 1 },
-    { field: "price", flex: 1 },
-    { field: "electric", flex: 1, hide: window.innerWidth < 1000 }, // Initially hide based on screen width
-  ]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [gridApi, setGridApi] = useState(null);
+  const columnsPtf = [
+    { field: "RaisonSociale_lmt", headerName: "DEPOSITAIRES", width: 120 },
+    {
+      field: "NumeroPtfDep_lmt",
+      headerName: "NUMERO",
+      width: 120,
+    },
+    {
+      field: "NomLocalProfil_lmt",
+      headerName: "PROFILE",
+      flex: 1,
+      hide: window.innerWidth < 1000,
+    },
+    {
+      field: "MktValAaiDevCLIAuc_lcn",
+      headerName: "MARKET VALUE",
+      cellStyle: { textAlign: "right" },
+      flex: 1,
+      valueFormatter: (params) =>
+        formatSpacingAndDecimalNumbers(params.value, 2),
+    },
+  ];
 
+  const columnsOpe = [
+    { field: "DateCptaOPE_lsd", headerName: "DATE", width: 100 },
+    { field: "NomLocalTypOp_lmt", headerName: "OPERATION", width: 120 },
+    { field: "Libelle_lmt", headerName: "ASSET", flex: 1 },
+    {
+      field: "CodeIsin_lst",
+      headerName: "ISIN",
+      flex: 1,
+      hide: window.innerWidth < 1000,
+    },
+  ];
+
+  // const [gridApi, setGridApi] = useState(null);
+  // useEffect(() => {
+  //   // AG GRID
+  //   const handleResize = () => {
+  //     const screenWidth = window.innerWidth;
+  //     if (gridApi) {
+  //       const column = gridApi.getColumnDef(NomLocalProfil_lmt);
+  //       if (column) {
+  //         const newColDefs = columnsOpe.map((col) => {
+  //           if (col.field === "NomLocalProfil_lmt") {
+  //             return { ...col, hide: screenWidth < 1000 };
+  //           }
+  //           return col;
+  //         });
+
+  //         gridApi.setColumnDefs(newColDefs);
+  //         gridApi.sizeColumnsToFit();
+  //       }
+  //     }
+  //   };
+  //   window.addEventListener("resize", handleResize);
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, [columnsPtf, gridApi]);
+
+  // const onGridReady = (params) => {
+  //   setGridApi(params.api);
+  //   params.api.sizeColumnsToFit();
+  // };
+  // // AG GRID
+
+  const onRowClicked = (params) => {
+    // Access the data for the clicked row using params.data
+    const activePtf = params.data;
+    dispatch(addActivePtfToStore(activePtf));
+    navigate("/layout/DetPtf");
+  };
+
+  // PREV
+  // GET FETCHING EXAMPLE
   useEffect(() => {
-    const handleResize = () => {
-      const screenWidth = window.innerWidth;
+    const fetchDataFromServer = async () => {
+      setIsFetching(true);
 
-      if (gridApi) {
-        const column = gridApi.getColumnDef("electric");
-        if (column) {
-          const newColDefs = colDefs.map((col) => {
-            if (col.field === "electric") {
-              return { ...col, hide: screenWidth < 1000 };
-            }
-            return col;
-          });
+      try {
+        //PORTFOLIOS
+        const responsePtf = await fetchPtf({ IdCtraCli });
+        const IdCtraPtf = responsePtf.data.map((obj) => {
+          return obj.IdCtraPtf;
+        });
+        // console.log(IdCtraPtf);
+        dispatch(addIdCtraPtfToStore(IdCtraPtf));
+        dispatch(addTotalMVToStore(responsePtf.totMV));
+        setdataPtf(responsePtf.data);
 
-          gridApi.setColumnDefs(newColDefs);
-          gridApi.sizeColumnsToFit();
-        }
+        console.log("Ptf IDs", IdCtraPtf);
+
+        //OPERATIONS
+        const responseOpe = await fetchOpe({ IdCtraPtf });
+        console.log(responseOpe);
+        const updateDataOpe = formatISO(responseOpe.data, "DateCptaOPE_lsd");
+        setdataOpe(updateDataOpe);
+
+        //LIGNES CLASSES FOR DOUGHNUT
+        const responseLignPtf = await fetchLign({ IdCtraPtf });
+        const labelsAndDataClasses = getUniqueLanguesWithSum(
+          responseLignPtf.data,
+          responsePtf.totMV
+        );
+        setDataClasses(labelsAndDataClasses);
+
+        //LIGNES DEVISES FOR DOUGHNUT
+        const labelsAndDataDevises = getUniqueDevWithSum(
+          responseLignPtf.data,
+          responsePtf.totMV
+        );
+        setDataDevises(labelsAndDataDevises);
+      } catch (error) {
+        setError({ message: error.message || "custom error message" });
+      } finally {
+        setIsFetching(false);
       }
     };
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [colDefs, gridApi]);
-
-  const onGridReady = (params) => {
-    setGridApi(params.api);
-    params.api.sizeColumnsToFit();
-  };
+    fetchDataFromServer(); // Call the renamed local function
+  }, []);
+  //
 
   return (
     <div className="outlet">
@@ -60,17 +171,17 @@ const Ptf = () => {
         <Card title="VOS PORTEFEUILLES">
           <div
             className="ag-theme-quartz"
-            style={{ width: "100%", height: "100%" }}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
           >
             <AgGridReact
-              onGridReady={onGridReady}
-              rowData={rowData}
-              columnDefs={colDefs}
+              // onGridReady={onGridReady}
+              rowData={dataPtf}
+              columnDefs={columnsPtf}
               domLayout="autoHeight"
-              defaultColDef={{
-                flex: 1,
-                minWidth: 100,
-              }}
+              onRowClicked={onRowClicked} // Add this line for onRowClicked handler
             />
           </div>
         </Card>
@@ -78,7 +189,19 @@ const Ptf = () => {
           <Card title="CLASSES D'ACTIF"></Card>
           <Card title="DEVISES"></Card>
         </section>
-        <Card title="OPERATIONS"></Card>
+        <Card title="OPERATIONS">
+          <div
+            className="ag-theme-quartz"
+            style={{ width: "100%", height: "100%" }}
+          >
+            <AgGridReact
+              // onGridReady={onGridReady}
+              rowData={dataOpe}
+              columnDefs={columnsOpe}
+              domLayout="autoHeight"
+            />
+          </div>
+        </Card>
       </section>
       <Footer />
     </div>
